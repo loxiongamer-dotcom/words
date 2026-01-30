@@ -1,27 +1,18 @@
-/* General page styling */
 body {
   background: linear-gradient(to bottom, #1e3c72, #2a5298);
   color: white;
   font-family: Arial, sans-serif;
+  text-align: center;
   margin: 0;
   padding: 0;
-  text-align: center;
 }
 
-/* Header / Dashboard */
 header {
   background: #111;
-  color: #fff;
   padding: 15px;
   font-size: 18px;
 }
 
-#dashboard span {
-  margin: 0 15px;
-  font-weight: bold;
-}
-
-/* Buttons */
 button {
   padding: 12px 18px;
   margin: 8px;
@@ -31,7 +22,6 @@ button {
   background: #0077cc;
   color: white;
   cursor: pointer;
-  transition: transform 0.2s, background 0.3s;
 }
 
 button:hover {
@@ -39,22 +29,12 @@ button:hover {
   transform: scale(1.05);
 }
 
-/* Category button colors */
-button[data-cat="Food"] { background: #ff7043; }
-button[data-cat="Animals"] { background: #66bb6a; }
-button[data-cat="Tech"] { background: #42a5f5; }
-button[data-cat="Movies"] { background: #ab47bc; }
-button[data-cat="Music"] { background: #ef5350; }
-button[data-cat="Sports"] { background: #fdd835; color: #222; }
-
-/* Thermometer styling */
 #thermometer {
   width: 90%;
   height: 25px;
   background: #222;
   margin: 20px auto;
   border-radius: 15px;
-  box-shadow: inset 0 0 5px #000;
 }
 
 #thermo-fill {
@@ -62,11 +42,9 @@ button[data-cat="Sports"] { background: #fdd835; color: #222; }
   width: 0%;
   background: linear-gradient(to right, #00f, #ffa500, #ff0000);
   border-radius: 15px;
-  transition: width 0.5s, background 0.5s;
-  box-shadow: 0 0 10px rgba(255,0,0,0.6);
+  transition: width 0.5s;
 }
 
-/* Emoji feedback */
 #emoji {
   font-size: 50px;
   margin: 15px;
@@ -78,36 +56,6 @@ button[data-cat="Sports"] { background: #fdd835; color: #222; }
   transform: scale(1.2);
 }
 
-/* Game sections */
 .hidden {
   display: none;
-}
-
-#last-guesses {
-  margin-top: 15px;
-  font-size: 16px;
-}
-
-#tries {
-  margin-top: 10px;
-  font-size: 18px;
-}
-
-/* Input box */
-input#guess {
-  padding: 10px;
-  font-size: 16px;
-  border-radius: 6px;
-  border: none;
-  margin-top: 10px;
-  width: 70%;
-  max-width: 300px;
-}
-
-/* Ads section */
-#ads {
-  margin-top: 25px;
-  padding: 15px;
-  background: rgba(255,255,255,0.1);
-  border-radius: 10px;
 }
