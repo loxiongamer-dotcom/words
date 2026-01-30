@@ -1,3 +1,14 @@
+// Temporary dictionary list (expand later or connect to Firebase)
+const dictionary = [
+  "apple","bread","chair","table","guitar","printer","stadium","holiday",
+  "television","basketball","microphone","restaurant","computer","technology",
+  "music","sports","animals","movies","phone","screen","keyboard"
+];
+
+function isValidWord(word) {
+  return dictionary.includes(word.toLowerCase());
+}
+
 let coins = 50;
 let wins = 0;
 let tries = 8;
@@ -76,7 +87,13 @@ function startGame(category = "Food", difficulty = "Beginner") {
 
 document.getElementById("submit").addEventListener("click", () => {
   const guess = document.getElementById("guess").value.toLowerCase();
-  if (!guess || lastGuesses.includes(guess)) return;
+if (!guess || lastGuesses.includes(guess)) return;
+
+// Check dictionary
+if (!isValidWord(guess)) {
+  alert("That’s not a valid word!");
+  return;
+}
 
   lastGuesses.unshift(guess);
   if (lastGuesses.length > 3) lastGuesses.pop();
