@@ -1,3 +1,10 @@
+// Sound effects
+const soundCold = new Audio("assets/sounds/cold.mp3");
+const soundWarm = new Audio("assets/sounds/warm.mp3");
+const soundHot = new Audio("assets/sounds/hot.mp3");
+const soundWin = new Audio("assets/sounds/win.mp3");
+const soundLose = new Audio("assets/sounds/lose.mp3");
+
 // Temporary dictionary list (expand later or connect to Firebase)
 const dictionary = [
   "apple","bread","chair","table","guitar","printer","stadium","holiday",
@@ -107,19 +114,36 @@ let closeness = getClosenessPercent(guess, currentWord);
 thermoFill.style.width = closeness + "%";
 
   // Emoji feedback
-  if (closeness < 30) emojiEl.textContent = "❄️";
-  else if (closeness < 50) emojiEl.textContent = "🧊";
-  else if (closeness < 70) emojiEl.textContent = "☀️";
-  else if (closeness < 90) emojiEl.textContent = "🌶️";
-  else emojiEl.textContent = "🔥";
+  if (closeness < 30) {
+  emojiEl.textContent = "❄️";
+  soundCold.play();
+} else if (closeness < 50) {
+  emojiEl.textContent = "🧊";
+  soundCold.play();
+} else if (closeness < 70) {
+  emojiEl.textContent = "☀️";
+  soundWarm.play();
+} else if (closeness < 90) {
+  emojiEl.textContent = "🌶️";
+  soundWarm.play();
+} else {
+  emojiEl.textContent = "🔥";
+  soundHot.play();
+}
+
+// Animate emoji
+emojiEl.classList.add("show-emoji");
+setTimeout(() => emojiEl.classList.remove("show-emoji"), 800);
 
   if (guess === currentWord) {
-    wins++;
-    winsEl.textContent = wins;
-    alert("You win!");
-  } else if (tries === 0) {
-    alert("Game over! The word was " + currentWord);
-  }
+  wins++;
+  winsEl.textContent = wins;
+  soundWin.play();
+  alert("You win!");
+} else if (tries === 0) {
+  soundLose.play();
+  alert("Game over! The word was " + currentWord);
+}
 });
 
 document.getElementById("hint").addEventListener("click", () => {
