@@ -109,47 +109,4 @@ document.getElementById("submit").addEventListener("click", () => {
     return;
   }
 
-  lastGuesses.push(guess);
-  tries--;
-
-  // Thermometer closeness
-  let closeness = getClosenessPercent(guess, currentWord);
-  thermoFill.style.width = closeness + "%";
-
-  // Emoji feedback + sounds
-  if (closeness < 30) {
-    emojiEl.textContent = "❄️";
-    soundCold.play();
-  } else if (closeness < 50) {
-    emojiEl.textContent = "🧊";
-    soundCold.play();
-  } else if (closeness < 70) {
-    emojiEl.textContent = "☀️";
-    soundWarm.play();
-  } else if (closeness < 90) {
-    emojiEl.textContent = "🌶️";
-    soundWarm.play();
-  } else {
-    emojiEl.textContent = "🔥";
-    soundHot.play();
-  }
-
-  // 👉 Flash animation (only once, clean)
-  emojiEl.classList.remove("show-emoji");   // reset
-  void emojiEl.offsetWidth;                 // force reflow
-  emojiEl.classList.add("show-emoji");      // fade in
-  setTimeout(() => {
-    emojiEl.classList.remove("show-emoji"); // fade out
-  }, 800);
-
-  // Win/Lose logic
-  if (guess === currentWord) {
-    wins++;
-    winsEl.textContent = wins;
-    soundWin.play();
-    alert("You win!");
-  } else if (tries === 0) {
-    soundLose.play();
-    alert("Game over! The word was " + currentWord);
-  }
-});
+  lastGuesses.push(
