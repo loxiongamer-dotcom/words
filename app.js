@@ -1,0 +1,88 @@
+let coins = 50;
+let wins = 0;
+let tries = 8;
+let currentWord = "";
+let lastGuesses = [];
+
+const coinsEl = document.getElementById("coins");
+const winsEl = document.getElementById("wins");
+const triesEl = document.getElementById("tries-left");
+const thermoFill = document.getElementById("thermo-fill");
+const emojiEl = document.getElementById("emoji");
+const lastGuessesEl = document.getElementById("last-guesses");
+const wordLengthEl = document.getElementById("word-length");
+
+document.querySelectorAll("#categories button").forEach(btn => {
+  btn.addEventListener("click", () => {
+    startGame(btn.dataset.cat);
+  });
+});
+
+document.querySelectorAll("#difficulty button").forEach(btn => {
+  btn.addEventListener("click", () => {
+    startGame(null, btn.dataset.diff);
+  });
+});
+
+function startGame(category = "Food", difficulty = "Beginner") {
+  document.getElementById("selection").classList.add("hidden");
+  document.getElementById("game").classList.remove("hidden");
+
+  // Temporary word pool (replace with Firebase later)
+  const words = {
+    Beginner: ["apple", "bread", "chair", "table"],
+    Novice: ["guitar", "printer", "stadium", "holiday"],
+    Expert: ["television", "basketball", "microphone", "restaurant"]
+  };
+
+  const pool = words[difficulty];
+  currentWord = pool[Math.floor(Math.random() * pool.length)];
+  wordLengthEl.textContent = `Word length: ${currentWord.length} letters`;
+}
+
+document.getElementById("submit").addEventListener("click", () => {
+  const guess = document.getElementById("guess").value.toLowerCase();
+  if (!guess || lastGuesses.includes(guess)) return;
+
+  lastGuesses.unshift(guess);
+  if (lastGuesses.length > 3) lastGuesses.pop();
+  lastGuessesEl.textContent = "Last guesses: " + lastGuesses.join(", ");
+
+  tries--;
+  triesEl.textContent = tries;
+
+  // Simple closeness check (replace with better algorithm later)
+  let closeness = Math.min(100, (guess.length / currentWord.length) * 100);
+  thermoFill.style.width = closeness + "%";
+
+  // Emoji feedback
+  if (closeness < 30) emojiEl.textContent = "❄️";
+  else if (closeness < 50) emojiEl.textContent = "🧊";
+  else if (closeness < 70) emojiEl.textContent = "☀️";
+  else if (closeness < 90) emojiEl.textContent = "🌶️";
+  else emojiEl.textContent = "🔥";
+
+  if (guess === currentWord) {
+    wins++;
+    winsEl.textContent = wins;
+    alert("You win!");
+  } else if (tries === 0) {
+    alert("Game over! The word was " + currentWord);
+  }
+});
+
+document.getElementById("hint").addEventListener("click", () => {
+  if (coins >= 20) {
+    coins -= 20;
+    coinsEl.textContent = coins;
+    alert("Hint: The word starts with " + currentWord[0]);
+  } else {
+    alert("Not enough coins!");
+  }
+});
+
+document.getElementById("watch-ad").addEventListener("click", () => {
+  coins += 10;
+  coinsEl.textContent = coins;
+  alert("You earned 10 coins!");
+});

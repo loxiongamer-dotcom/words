@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Word Thermometer</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <div id="dashboard">
+      <span>Coins: <span id="coins">50</span></span>
+      <span>Wins: <span id="wins">0</span></span>
+    </div>
+  </header>
+
+  <main>
+    <section id="selection">
+      <h2>Select Category</h2>
+      <div id="categories">
+        <button data-cat="Food">Food</button>
+        <button data-cat="Animals">Animals</button>
+        <button data-cat="Tech">Tech</button>
+        <button data-cat="Movies">Movies</button>
+        <button data-cat="Music">Music</button>
+        <button data-cat="Sports">Sports</button>
+      </div>
+
+      <h2>Select Difficulty</h2>
+      <div id="difficulty">
+        <button data-diff="Beginner">Beginner</button>
+        <button data-diff="Novice">Novice</button>
+        <button data-diff="Expert">Expert</button>
+      </div>
+    </section>
+
+    <section id="game" class="hidden">
+      <div id="thermometer">
+        <div id="thermo-fill"></div>
+      </div>
+      <div id="emoji"></div>
+
+      <p id="word-length"></p>
+
+      <input type="text" id="guess" placeholder="Enter your guess">
+      <button id="submit">Enter Guess</button>
+
+      <div id="last-guesses"></div>
+      <div id="tries">Tries left: <span id="tries-left">8</span></div>
+
+      <button id="hint">Use Hint</button>
+    </section>
+
+    <section id="ads">
+      <p>Ad space (Google Adsense)</p>
+      <button id="watch-ad">Watch Ad for 10 Coins</button>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
