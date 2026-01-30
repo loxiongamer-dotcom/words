@@ -8,7 +8,7 @@ const soundWin = new Audio("assets/sounds/win.mp3");
 const soundLose = new Audio("assets/sounds/lose.mp3");
 
 // ======================
-// Dictionary (temporary list)
+// Dictionary
 // ======================
 const dictionary = [
   "apple","bread","beans","chair","table","guitar","printer","stadium","holiday",
@@ -60,7 +60,7 @@ function checkStartGame() {
 }
 
 // ======================
-// Thermometer Logic (Levenshtein distance)
+// Thermometer Logic
 // ======================
 function getLevenshteinDistance(a, b) {
   const matrix = Array.from({ length: b.length + 1 }, (_, i) => [i]);
@@ -89,8 +89,7 @@ function getClosenessPercent(guess, solution) {
 // Start Game
 // ======================
 function startGame(category, difficulty) {
-  // For now, just pick a placeholder word
-  currentWord = "television"; 
+  currentWord = "television"; // placeholder
   tries = 7;
   lastGuesses = [];
   document.getElementById("game").classList.remove("hidden");
@@ -103,10 +102,49 @@ document.getElementById("submit").addEventListener("click", () => {
   const guess = document.getElementById("guess").value.toLowerCase();
   if (!guess || lastGuesses.includes(guess)) return;
 
-  // Dictionary check
   if (!isValidWord(guess)) {
     alert("That’s not a valid word!");
     return;
   }
 
-  lastGuesses.push(
+  lastGuesses.push(guess);
+  tries--;
+
+  let closeness = getClosenessPercent(guess, currentWord);
+  thermoFill.style.width = closeness + "%";
+
+  if (closeness < 30) {
+    emojiEl.textContent = "❄️";
+    soundCold.play();
+  } else if (closeness < 50) {
+    emojiEl.textContent = "🧊";
+    soundCold.play();
+  } else if (closeness < 70) {
+    emojiEl.textContent = "☀️";
+    soundWarm.play();
+  } else if (closeness < 90) {
+    emojiEl.textContent = "🌶️";
+    soundWarm.play();
+  } else {
+    emojiEl.textContent = "🔥";
+    soundHot.play();
+  }
+
+  // Flash animation
+  emojiEl.classList.remove("show-emoji");
+  void emojiEl.offsetWidth;
+  emojiEl.classList.add("show-emoji");
+  setTimeout(() => {
+    emojiEl.classList.remove("show-emoji");
+  }, 1500);
+
+  if (guess === currentWord) {
+    wins++;
+    winsEl.textContent = wins;
+    soundWin.play();
+    alert("You win!");
+  } else if (tries === 0) {
+    soundLose.play();
+    alert("Game over! The word was " + currentWord);
+  }
+});
