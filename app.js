@@ -12,17 +12,28 @@ const emojiEl = document.getElementById("emoji");
 const lastGuessesEl = document.getElementById("last-guesses");
 const wordLengthEl = document.getElementById("word-length");
 
+let selectedCategory = null;
+let selectedDifficulty = null;
+
 document.querySelectorAll("#categories button").forEach(btn => {
   btn.addEventListener("click", () => {
-    startGame(btn.dataset.cat);
+    selectedCategory = btn.dataset.cat;
+    checkStartGame();
   });
 });
 
 document.querySelectorAll("#difficulty button").forEach(btn => {
   btn.addEventListener("click", () => {
-    startGame(null, btn.dataset.diff);
+    selectedDifficulty = btn.dataset.diff;
+    checkStartGame();
   });
 });
+
+function checkStartGame() {
+  if (selectedCategory && selectedDifficulty) {
+    startGame(selectedCategory, selectedDifficulty);
+  }
+}
 
 function startGame(category = "Food", difficulty = "Beginner") {
   document.getElementById("selection").classList.add("hidden");
