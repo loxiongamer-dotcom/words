@@ -131,6 +131,12 @@ thermoFill.style.width = closeness + "%";
   soundHot.play();
 }
 
+  // Trigger emoji flash
+emojiEl.classList.add("show-emoji");
+setTimeout(() => {
+  emojiEl.classList.remove("show-emoji");
+}, 800);
+  
 // Animate emoji
 emojiEl.classList.add("show-emoji");
 setTimeout(() => emojiEl.classList.remove("show-emoji"), 800);
