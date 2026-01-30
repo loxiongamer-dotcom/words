@@ -1,13 +1,17 @@
+// ======================
 // Sound effects
+// ======================
 const soundCold = new Audio("assets/sounds/cold.mp3");
 const soundWarm = new Audio("assets/sounds/warm.mp3");
 const soundHot = new Audio("assets/sounds/hot.mp3");
 const soundWin = new Audio("assets/sounds/win.mp3");
 const soundLose = new Audio("assets/sounds/lose.mp3");
 
-// Temporary dictionary list (expand later or connect to Firebase)
+// ======================
+// Dictionary (temporary list)
+// ======================
 const dictionary = [
-  "apple","bread","chair","table","guitar","printer","stadium","holiday",
+  "apple","bread","beans","chair","table","guitar","printer","stadium","holiday",
   "television","basketball","microphone","restaurant","computer","technology",
   "music","sports","animals","movies","phone","screen","keyboard"
 ];
@@ -16,23 +20,25 @@ function isValidWord(word) {
   return dictionary.includes(word.toLowerCase());
 }
 
+// ======================
+// Game variables
+// ======================
+let selectedCategory = null;
+let selectedDifficulty = null;
+let currentWord = "";
 let coins = 50;
 let wins = 0;
-let tries = 8;
-let currentWord = "";
+let tries = 7;
 let lastGuesses = [];
 
 const coinsEl = document.getElementById("coins");
 const winsEl = document.getElementById("wins");
-const triesEl = document.getElementById("tries-left");
-const thermoFill = document.getElementById("thermo-fill");
 const emojiEl = document.getElementById("emoji");
-const lastGuessesEl = document.getElementById("last-guesses");
-const wordLengthEl = document.getElementById("word-length");
+const thermoFill = document.getElementById("thermo-fill");
 
-let selectedCategory = null;
-let selectedDifficulty = null;
-
+// ======================
+// Category & Difficulty Selection
+// ======================
 document.querySelectorAll("#categories button").forEach(btn => {
   btn.addEventListener("click", () => {
     selectedCategory = btn.dataset.cat;
@@ -47,6 +53,15 @@ document.querySelectorAll("#difficulty button").forEach(btn => {
   });
 });
 
+function checkStartGame() {
+  if (selectedCategory && selectedDifficulty) {
+    startGame(selectedCategory, selectedDifficulty);
+  }
+}
+
+// ======================
+// Thermometer Logic (Levenshtein distance)
+// ======================
 function getLevenshteinDistance(a, b) {
   const matrix = Array.from({ length: b.length + 1 }, (_, i) => [i]);
   for (let j = 0; j <= a.length; j++) matrix[0][j] = j;
@@ -70,100 +85,71 @@ function getClosenessPercent(guess, solution) {
   return Math.round(((maxLen - distance) / maxLen) * 100);
 }
 
-function checkStartGame() {
-  if (selectedCategory && selectedDifficulty) {
-    startGame(selectedCategory, selectedDifficulty);
-  }
-}
-
-function startGame(category = "Food", difficulty = "Beginner") {
-  document.getElementById("selection").classList.add("hidden");
+// ======================
+// Start Game
+// ======================
+function startGame(category, difficulty) {
+  // For now, just pick a placeholder word
+  currentWord = "television"; 
+  tries = 7;
+  lastGuesses = [];
   document.getElementById("game").classList.remove("hidden");
-
-  // Temporary word pool (replace with Firebase later)
-  const words = {
-    Beginner: ["apple", "bread", "chair", "table"],
-    Novice: ["guitar", "printer", "stadium", "holiday"],
-    Expert: ["television", "basketball", "microphone", "restaurant"]
-  };
-
-  const pool = words[difficulty];
-  currentWord = pool[Math.floor(Math.random() * pool.length)];
-  wordLengthEl.textContent = `Word length: ${currentWord.length} letters`;
 }
 
+// ======================
+// Submit Guess
+// ======================
 document.getElementById("submit").addEventListener("click", () => {
   const guess = document.getElementById("guess").value.toLowerCase();
-if (!guess || lastGuesses.includes(guess)) return;
+  if (!guess || lastGuesses.includes(guess)) return;
 
-// Check dictionary
-if (!isValidWord(guess)) {
-  alert("That’s not a valid word!");
-  return;
-}
-
-  lastGuesses.unshift(guess);
-  if (lastGuesses.length > 3) lastGuesses.pop();
-  lastGuessesEl.textContent = "Last guesses: " + lastGuesses.join(", ");
-
-  tries--;
-  triesEl.textContent = tries;
-
-  // Simple closeness check (replace with better algorithm later)
-let closeness = getClosenessPercent(guess, currentWord);
-thermoFill.style.width = closeness + "%";
-
-  // Emoji feedback
-  if (closeness < 30) {
-  emojiEl.textContent = "❄️";
-  soundCold.play();
-} else if (closeness < 50) {
-  emojiEl.textContent = "🧊";
-  soundCold.play();
-} else if (closeness < 70) {
-  emojiEl.textContent = "☀️";
-  soundWarm.play();
-} else if (closeness < 90) {
-  emojiEl.textContent = "🌶️";
-  soundWarm.play();
-} else {
-  emojiEl.textContent = "🔥";
-  soundHot.play();
-}
-
-  // Trigger emoji flash
-emojiEl.classList.add("show-emoji");
-setTimeout(() => {
-  emojiEl.classList.remove("show-emoji");
-}, 800);
-  
-// Animate emoji
-emojiEl.classList.add("show-emoji");
-setTimeout(() => emojiEl.classList.remove("show-emoji"), 800);
-
-  if (guess === currentWord) {
-  wins++;
-  winsEl.textContent = wins;
-  soundWin.play();
-  alert("You win!");
-} else if (tries === 0) {
-  soundLose.play();
-  alert("Game over! The word was " + currentWord);
-}
-});
-
-document.getElementById("hint").addEventListener("click", () => {
-  if (coins >= 20) {
-    coins -= 20;
-    coinsEl.textContent = coins;
-    alert("Hint: The word starts with " + currentWord[0]);
-  } else {
-    alert("Not enough coins!");
+  // Dictionary check
+  if (!isValidWord(guess)) {
+    alert("That’s not a valid word!");
+    return;
   }
-});
 
-document.getElementById("watch-ad").addEventListener("click", () => {
-  coins += 10;
-  coinsEl.textContent = coins;
-  alert("You earned 10 coins!");
+  lastGuesses.push(guess);
+  tries--;
+
+  // Thermometer closeness
+  let closeness = getClosenessPercent(guess, currentWord);
+  thermoFill.style.width = closeness + "%";
+
+  // Emoji feedback + sounds
+  if (closeness < 30) {
+    emojiEl.textContent = "❄️";
+    soundCold.play();
+  } else if (closeness < 50) {
+    emojiEl.textContent = "🧊";
+    soundCold.play();
+  } else if (closeness < 70) {
+    emojiEl.textContent = "☀️";
+    soundWarm.play();
+  } else if (closeness < 90) {
+    emojiEl.textContent = "🌶️";
+    soundWarm.play();
+  } else {
+    emojiEl.textContent = "🔥";
+    soundHot.play();
+  }
+
+  // 👉 Flash animation (only once, clean)
+  emojiEl.classList.remove("show-emoji");   // reset
+  void emojiEl.offsetWidth;                 // force reflow
+  emojiEl.classList.add("show-emoji");      // fade in
+  setTimeout(() => {
+    emojiEl.classList.remove("show-emoji"); // fade out
+  }, 800);
+
+  // Win/Lose logic
+  if (guess === currentWord) {
+    wins++;
+    winsEl.textContent = wins;
+    soundWin.play();
+    alert("You win!");
+  } else if (tries === 0) {
+    soundLose.play();
+    alert("Game over! The word was " + currentWord);
+  }
 });
