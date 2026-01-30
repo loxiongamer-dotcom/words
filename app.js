@@ -29,6 +29,29 @@ document.querySelectorAll("#difficulty button").forEach(btn => {
   });
 });
 
+function getLevenshteinDistance(a, b) {
+  const matrix = Array.from({ length: b.length + 1 }, (_, i) => [i]);
+  for (let j = 0; j <= a.length; j++) matrix[0][j] = j;
+
+  for (let i = 1; i <= b.length; i++) {
+    for (let j = 1; j <= a.length; j++) {
+      const cost = a[j - 1] === b[i - 1] ? 0 : 1;
+      matrix[i][j] = Math.min(
+        matrix[i - 1][j] + 1,
+        matrix[i][j - 1] + 1,
+        matrix[i - 1][j - 1] + cost
+      );
+    }
+  }
+  return matrix[b.length][a.length];
+}
+
+function getClosenessPercent(guess, solution) {
+  const maxLen = Math.max(guess.length, solution.length);
+  const distance = getLevenshteinDistance(guess, solution);
+  return Math.round(((maxLen - distance) / maxLen) * 100);
+}
+
 function checkStartGame() {
   if (selectedCategory && selectedDifficulty) {
     startGame(selectedCategory, selectedDifficulty);
@@ -63,8 +86,8 @@ document.getElementById("submit").addEventListener("click", () => {
   triesEl.textContent = tries;
 
   // Simple closeness check (replace with better algorithm later)
-  let closeness = Math.min(100, (guess.length / currentWord.length) * 100);
-  thermoFill.style.width = closeness + "%";
+let closeness = getClosenessPercent(guess, currentWord);
+thermoFill.style.width = closeness + "%";
 
   // Emoji feedback
   if (closeness < 30) emojiEl.textContent = "❄️";
