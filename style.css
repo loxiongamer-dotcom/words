@@ -71,10 +71,11 @@ button[data-cat="Sports"] { background: #fdd835; color: #222; }
   font-size: 50px;
   margin: 15px;
   opacity: 0;
-  transition: opacity 0.5s;
+  transition: opacity 1s, transform 0.3s;
 }
 .show-emoji {
   opacity: 1;
+  transform: scale(1.2);
 }
 
 /* Game sections */
